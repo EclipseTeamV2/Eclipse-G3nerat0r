@@ -26,11 +26,24 @@ def pinger(target, count):
         time.sleep(1)  # Delay to prevent spamming too quickly
 
 
-def nitro_generator(count):
+def nitro_generator(count, webhook_url):
     for _ in range(count):
+        # Generate a random 16-character Nitro code
         code = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
-        print(f"Generated Nitro Code: https://discord.gift/{code}")
-        time.sleep(0.5)
+        nitro_link = f"https://discord.gift/{code}"
+        print(f"Generated Nitro Code: {nitro_link}")
+
+        # Send the Nitro code to the webhook
+        payload = {"content": f"Generated Nitro Code: {nitro_link}"}
+        response = requests.post(webhook_url, json=payload)
+
+        # Check if the request was successful
+        if response.status_code == 204:
+            print(f"Code successfully sent to the webhook.")
+        else:
+            print(f"Failed to send code to the webhook. Status code: {response.status_code}")
+
+        time.sleep(0.5)  # Slight delay to prevent overwhelming the server
 
 
 def roblox_giftcard_generator(count):
@@ -43,7 +56,7 @@ def roblox_giftcard_generator(count):
 
 
 def credits():
-    print(f"{BLUE}Void Tool - Created by testuser{ENDC}\n")
+    print(f"{BLUE}Eclipse G3nerator - Created & Coded by Eclipse{ENDC}\n")
 
 
 def banner():
@@ -84,8 +97,9 @@ def menu():
             pinger(target, count)
 
         elif choice == '3':
+            webhook_url = input("Enter Discord webhook URL: ")
             count = int(input("How many Nitro codes to generate? "))
-            nitro_generator(count)
+            nitro_generator(count, webhook_url)
 
         elif choice == '4':
             count = int(input("How many Roblox gift card codes to generate? "))
